@@ -169,8 +169,17 @@ bool check_parentheses(int p,int q){
 int find_mainop(int p,int q){
   int ans = -1;//the position of main operator
   int priority = 6;
+  int brackets_cnt = 0;
   for (int i = p; i <= q; i++)
   { 
+    if(tokens[i].type == TK_LP){
+      brackets_cnt++;
+    }else if(tokens[i].type == TK_RP){
+      brackets_cnt--;
+    }
+    //if the token is between LP and RP,we should ignore it.
+    if(brackets_cnt>0)
+      continue;
     if(tokens[i].priority <= priority && tokens[i].priority != 0){
       ans = i;
       priority = tokens[i].priority;
