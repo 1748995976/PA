@@ -160,9 +160,11 @@ bool check_parentheses(int p,int q){
     }else if(tokens[i].type == TK_RP){
       cnt--;
     }
+    assert(cnt >= 0);
     if(cnt < 0)
       return false;
   }
+  assert(cnt == 0);
   return cnt == 0;
 }
 
@@ -186,6 +188,48 @@ int find_mainop(int p,int q){
     }
   }
   return ans;
+}
+
+uint32_t eval(int p, int q){
+  if (p > q) {
+    printf("eval fail!");
+    return -1;
+  }
+  else if (p == q) {
+    uint32_t result = 0;
+    switch (tokens[p].type)
+    {
+    case TK_INT:
+      result = (uint32_t)atoi(tokens[p].str);
+      break;
+    case TK_HEXINT:
+      sscanf(tokens[p].str+2,"%x",&result);
+      break;
+    case TK_REG:
+    //need update
+			result = isa_reg_str2val(tokens[p].str);
+      break;
+    }
+  }
+  else if (check_parentheses(p, q) == true) {
+    /* The expression is surrounded by a matched pair of parentheses.
+     * If that is the case, just throw away the parentheses.
+     */
+    return eval(p + 1, q - 1);
+  }
+  else {
+    op = the position of 主运算符 in the token expression;
+    val1 = eval(p, op - 1);
+    val2 = eval(op + 1, q);
+
+    switch (op_type) {
+      case '+': return val1 + val2;
+      case '-': /* ... */
+      case '*': /* ... */
+      case '/': /* ... */
+      default: assert(0);
+    }
+  }
 }
 
 uint32_t expr(char *e, bool *success) {
