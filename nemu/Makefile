@@ -1,4 +1,5 @@
 NAME = nemu
+NEMU_HOME=/home/hust/ics2019/nemu
 
 ifneq ($(MAKECMDGOALS),clean) # ignore check for make clean
 ISA ?= x86
