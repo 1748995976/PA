@@ -167,8 +167,18 @@ bool check_parentheses(int p,int q){
 }
 
 int find_mainop(int p,int q){
-
+  int ans = -1;//the position of main operator
+  int priority = 6;
+  for (int i = p; i <= q; i++)
+  { 
+    if(tokens[i].priority <= priority && tokens[i].priority != 0){
+      ans = i;
+      priority = tokens[i].priority;
+    }
+  }
+  return ans;
 }
+
 uint32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
