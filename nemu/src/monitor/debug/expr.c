@@ -7,7 +7,19 @@
 #include <regex.h>
 
 enum {
-  TK_NOTYPE = 256, TK_EQ
+  TK_NOTYPE = 256,
+  TK_EQ,
+  TK_NEQ,
+  TK_ADD,
+  TK_SUB,
+  TK_MUL,
+  TK_DIV,
+  TK_LP,
+  TK_RP,
+  TK_INT,
+  TK_HEXINT,
+  TK_REG,
+  TK_AND,
 
   /* TODO: Add more token types */
 
@@ -16,15 +28,26 @@ enum {
 static struct rule {
   char *regex;
   int token_type;
+  int priority;
 } rules[] = {
 
   /* TODO: Add more rules.
    * Pay attention to the precedence level of different rules.
    */
 
-  {" +", TK_NOTYPE},    // spaces
-  {"\\+", '+'},         // plus
-  {"==", TK_EQ}         // equal
+  {" +", TK_NOTYPE, 0},
+  {"==", TK_EQ, 2},
+  {"!=", TK_NEQ, 2},
+  {"\\+", TK_ADD, 3},
+  {"\\-", TK_SUB, 3},
+  {"\\*", TK_MUL, 4},
+  {"\\/", TK_DIV, 4},
+  {"\\(", TK_LP, 5},
+  {"\\)", TK_RP, 5},
+  {"[0-9]+", TK_INT, 0},
+  {"0x[0-9|a-f|A-F]+", TK_HEXINT, 0},
+  {"\\$[0-9|a-z|A-Z]+", TK_REG, 0},
+  {"&&", TK_AND, 1}
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -51,6 +74,7 @@ void init_regex() {
 typedef struct token {
   int type;
   char str[32];
+  int priority;
 } Token;
 
 static Token tokens[32] __attribute__((used)) = {};
@@ -78,11 +102,39 @@ static bool make_token(char *e) {
          * to record the token in the array `tokens'. For certain types
          * of tokens, some extra actions should be performed.
          */
-
+        assert(nr_token < 32);
         switch (rules[i].token_type) {
-          default: TODO();
+          case TK_NOTYPE:
+            break;
+          case TK_EQ:
+          case TK_NEQ:
+          case TK_ADD:
+          case TK_SUB:
+          case TK_MUL:
+          case TK_DIV:
+          case TK_LP:
+          case TK_RP:
+          case TK_AND:
+            tokens[nr_token].type = rules[i].token_type;
+            tokens[nr_token].priority = rules[i].priority;
+            nr_token++;
+            break;
+          case TK_INT:
+          case TK_HEXINT:
+          case TK_REG:
+            assert(substr_len < 32);
+            tokens[nr_token].type = rules[i].token_type;
+            tokens[nr_token].priority = rules[i].priority;
+            strncpy(tokens[nr_token].str,substr_start,substr_len);
+            tokens[nr_token].str[substr_len] = '\0';
+            break;
+          default: 
+            assert(substr_len < 32);
+            tokens[nr_token].type = rules[i].token_type;
+            tokens[nr_token].priority = rules[i].priority;
+            nr_token++;
+            break;
         }
-
         break;
       }
     }
@@ -96,6 +148,27 @@ static bool make_token(char *e) {
   return true;
 }
 
+bool check_parentheses(int p,int q){
+  if(tokens[p].type != TK_LP || tokens[q].type != TK_RP){
+    return false;
+  }
+  int cnt = 0;
+  for (int i = p; i <= q; i++)
+  {
+    if(tokens[i].type == TK_LP){
+      cnt++;
+    }else if(tokens[i].type == TK_RP){
+      cnt--;
+    }
+    if(cnt < 0)
+      return false;
+  }
+  return cnt == 0;
+}
+
+int find_mainop(int p,int q){
+
+}
 uint32_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
