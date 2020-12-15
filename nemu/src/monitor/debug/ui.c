@@ -2,6 +2,7 @@
 #include "monitor/expr.h"
 #include "monitor/watchpoint.h"
 #include "nemu.h"
+#include "reg.h"
 
 #include <stdlib.h>
 #include <readline/readline.h>
@@ -38,6 +39,28 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args){
+  if(args == NULL){
+    cpu_exec(1);
+  }else{
+    int n;
+    sscanf(args,"%d",&n);
+    cpu_exec(n);
+  }
+  return 0;
+}
+
+static int cmd_info(char *args){
+  if(args == NULL){
+
+  }else if(strcmp(args, "r") == 0){
+    isa_reg_display();
+  }else if(strcmp(args, "w") == 0){
+
+  }
+  return 0;
+}
+
 static struct {
   char *name;
   char *description;
@@ -46,6 +69,8 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
+  { "si", "Execution by step", cmd_si },
+  { "info", "Print the value of all registers", cmd_info }
 
   /* TODO: Add more commands */
 
