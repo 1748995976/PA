@@ -67,18 +67,18 @@ void cpu_exec(uint64_t n) {
    	bool changed = false;
    	for(; wp != head; wp = wp->next){
    		bool success = true;
-   		uint32_t new_val = expr(temp->expression, &success);
+   		uint32_t new_val = expr(wp->expression, &success);
    		if(success == true){
-   			if(new_val == temp->old_val){
+   			if(new_val == wp->old_val){
    				continue;
    			}else{
    				changed = true;
    				printf("Watchpoint %d: %s changed: old 0x%x -> new 0x%x\n", 
-   						temp->NO, temp->expression, temp->old_val, new_val);
-   				temp->old_val = new_val;
+   						wp->NO, wp->expression, wp->old_val, new_val);
+   				wp->old_val = new_val;
    			}
    		}else{
-   				printf("Watchpoint %d: %s failed\n", temp->NO, temp->expression);
+   				printf("Watchpoint %d: %s failed\n", wp->NO, wp->expression);
    				nemu_state.state = NEMU_STOP;
    				break;
    			}

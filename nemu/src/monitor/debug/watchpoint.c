@@ -4,7 +4,9 @@
 #define NR_WP 32
 
 static WP wp_pool[NR_WP] = {};
-static WP *head = {.NO = -1, .next = NULL, .pre = NULL}, *free = {.NO = -1, .next = NULL, .pre = NULL};
+static WP head_init = {.NO = -1, .next = NULL, .pre = NULL};
+static WP free_init = {.NO = -1, .next = NULL, .pre = NULL};
+static WP *head = NULL, *free = NULL;
 
 void insert_wp_before(WP* old,WP* wp){
   WP *pre = old->pre;
@@ -32,6 +34,8 @@ void init_wp_pool() {
     wp_pool[i].next = NULL;
     wp_pool[i].pre = NULL;
   }
+  head = &head_init;
+  free = &free_init;
   head->next = head->pre = head;
   free->next = free->pre = head;
 

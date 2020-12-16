@@ -2,7 +2,6 @@
 #include "monitor/expr.h"
 #include "monitor/watchpoint.h"
 #include "nemu.h"
-#include "reg.h"
 
 #include <stdlib.h>
 #include <readline/readline.h>
@@ -66,6 +65,7 @@ static int cmd_p(char* args){
 	uint32_t result = expr(args, &success);
 	if(success == true){
 		printf("0x%x\n", result);
+    return result;
 	}
 	else{
 		printf("Invalid expression\n");
@@ -132,8 +132,8 @@ static struct {
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
   { "si", "Execution by step", cmd_si },
-  { "info", "Print the value of all registers", cmd_info }
-  { "p", "Print value of expression", cmd_p},
+  { "info", "Print the value of all registers", cmd_info },
+  { "p", "Print value of expression", cmd_p },
   { "x", "Scan Memory", cmd_x},
   { "w", "Add a watchpoint", cmd_w},
   { "d", "Delete a watchpoint", cmd_d}
