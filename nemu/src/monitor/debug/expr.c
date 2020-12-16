@@ -20,6 +20,8 @@ enum {
   TK_HEXINT,
   TK_REG,
   TK_AND,
+  TK_DEREF,
+  TK_NEG,
 
   /* TODO: Add more token types */
 
@@ -42,8 +44,8 @@ static struct rule {
   {"\\-", TK_SUB, 3},
   {"\\*", TK_MUL, 4},
   {"\\/", TK_DIV, 4},
-  {"\\(", TK_LP, 5},
-  {"\\)", TK_RP, 5},
+  {"\\(", TK_LP, 6},
+  {"\\)", TK_RP, 6},
   {"[0-9]+", TK_INT, 0},
   {"0x[0-9|a-f|A-F]+", TK_HEXINT, 0},
   {"\\$[0-9|a-z|A-Z]+", TK_REG, 0},
@@ -144,7 +146,7 @@ static bool make_token(char *e) {
       return false;
     }
   }
-
+  
   return true;
 }
 
@@ -199,15 +201,15 @@ uint32_t eval(int p, int q, bool* success){
     uint32_t result = 0;
     switch (tokens[p].type)
     {
-    case TK_INT:
-      result = (uint32_t)atoi(tokens[p].str);
-      break;
-    case TK_HEXINT:
-      sscanf(tokens[p].str+2,"%x",&result);
-      break;
-    case TK_REG:
-			result = isa_reg_str2val(tokens[p].str,success);
-      break;
+      case TK_INT:
+        result = (uint32_t)atoi(tokens[p].str);
+        break;
+      case TK_HEXINT:
+        sscanf(tokens[p].str+2,"%x",&result);
+        break;
+      case TK_REG:
+			  result = isa_reg_str2val(tokens[p].str,success);
+        break;
     }
     return result;
   }
@@ -221,11 +223,23 @@ uint32_t eval(int p, int q, bool* success){
   }
   else {
     int op = find_mainop(p,q);
-    uint32_t val1 = eval(p, op - 1);
-    uint32_t val2 = eval(op + 1, q);
+    if(tokens[op].type == TK_DEREF){
+      uint32_t val = eval(op+1,q,success);
+      if(*success == false){
+        return 0;
+      }
+      return isa_vaddr_read(val,4);
+    }else if(tokens[op].type == TK_NEG){
+      uint32_t val = eval(op+1,q,success);
+      if(*success == false){
+        return 0;
+      }
+      return (~val+1);
+    }
+    uint32_t val1 = eval(p, op - 1, success);
+    uint32_t val2 = eval(op + 1, q, success);
     if(*success == false)
       return 0;
-    paddr_read
     switch (tokens[op].type) {
       case TK_ADD: return val1 + val2;
       case TK_SUB: return val1 - val2;
@@ -233,7 +247,7 @@ uint32_t eval(int p, int q, bool* success){
       case TK_DIV: return val1 / val2;
       case TK_EQ: return (val1 == val2) ? 1 : 0;
       case TK_NEQ: return (val1 != val2) ? 1 : 0;
-      case TK_AND: return val1&&val2;
+      case TK_AND: return val1 && val2;
       default: assert(0);
     }
   }
@@ -244,10 +258,34 @@ uint32_t expr(char *e, bool *success) {
     *success = false;
     return 0;
   }
-
+	for (int i = 0; i < nr_token; i ++) {
+	  if (tokens[i].type == TK_MUL && (i == 0 
+		  || tokens[i - 1].type == TK_ADD
+		  || tokens[i - 1].type == TK_SUB
+		  || tokens[i - 1].type == TK_MUL
+		  || tokens[i - 1].type == TK_DIV
+		  || tokens[i - 1].type == TK_EQ
+		  || tokens[i - 1].type == TK_NEQ
+		  || tokens[i - 1].type == TK_AND
+      || tokens[i - 1].type == TK_LP
+		  ) ) {
+	    tokens[i].type = TK_DEREF;
+      tokens[i].type = 5;
+	  }else if (tokens[i].type == TK_SUB && (i == 0 
+		  || tokens[i - 1].type == TK_ADD
+		  || tokens[i - 1].type == TK_SUB
+		  || tokens[i - 1].type == TK_MUL
+		  || tokens[i - 1].type == TK_DIV
+		  || tokens[i - 1].type == TK_EQ
+		  || tokens[i - 1].type == TK_NEQ
+		  || tokens[i - 1].type == TK_AND
+      || tokens[i - 1].type == TK_LP
+		  ) ) {
+	    tokens[i].type = TK_NEG;
+      tokens[i].type = 5;
+	  }
+	}
+  *success = true;
   uint32_t val = eval(0,nr_token-1,success);
-  if(*success == true){
-    return val;
-  }
-  return 0;
+  return val;
 }
