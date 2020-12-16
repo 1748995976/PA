@@ -61,6 +61,68 @@ static int cmd_info(char *args){
   return 0;
 }
 
+static int cmd_p(char* args){
+	bool success = true;
+	uint32_t result = expr(args, &success);
+	if(success == true){
+		printf("0x%x\n", result);
+	}
+	else{
+		printf("Invalid expression\n");
+	}
+}
+
+static int cmd_x(char *args){
+	char *args1 = strtok(NULL, " ");
+	char *args2 = strtok(NULL, " ");
+	if(args1 == NULL){
+    panic("Lack first argument for command x");
+  }else if(args2 == NULL){
+    panic("Lack second argument for command x");
+  }else{
+		int cnt = atoi(args1);
+		if(cnt<1){
+      panic("Invalid first argument for command x");
+    }else{
+      bool success = true;
+			uint32_t addr = expr(args2,&success);
+      if(success == false){
+        panic("Invalid address for command x");
+      }else
+      {
+        for(int i=0; i<cnt; i++, addr+=4){
+				  uint32_t data = isa_vaddr_read(addr,4);
+				  printf("addr: %x -> %x\n",addr,data);
+			  }
+			  printf("\n");
+      }
+		}
+	}
+	return 0;
+}
+
+static int cmd_w(char *args){
+	bool success = true;
+	uint32_t result = expr(args, &success);
+	if(success == true){
+		WP *wp = new_wp();
+		wp->old_val = result;
+		strcat(wp->expression, args);
+		printf("Watchpoint %d: %s -> %x\n", wp->NO, wp->expression, wp->old_val);
+	}
+	else{
+		printf("Expression is not legal\n");
+	}
+	return 0;
+}
+
+static int cmd_d(char *args){
+	int index_delete;
+	sscanf(args, "%d", &index_delete);
+	free_wp(index_delete);
+	return 0;
+}
+
 static struct {
   char *name;
   char *description;
@@ -71,7 +133,10 @@ static struct {
   { "q", "Exit NEMU", cmd_q },
   { "si", "Execution by step", cmd_si },
   { "info", "Print the value of all registers", cmd_info }
-
+  { "p", "Print value of expression", cmd_p},
+  { "x", "Scan Memory", cmd_x},
+  { "w", "Add a watchpoint", cmd_w},
+  { "d", "Delete a watchpoint", cmd_d}
   /* TODO: Add more commands */
 
 };

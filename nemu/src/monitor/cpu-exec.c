@@ -61,6 +61,31 @@ void cpu_exec(uint64_t n) {
   log_clearbuf();
 
     /* TODO: check watchpoints here. */
+    WP *head = get_head(); 	
+   	WP *wp = head->next;
+
+   	bool changed = false;
+   	for(; wp != head; wp = wp->next){
+   		bool success = true;
+   		uint32_t new_val = expr(temp->expression, &success);
+   		if(success == true){
+   			if(new_val == temp->old_val){
+   				continue;
+   			}else{
+   				changed = true;
+   				printf("Watchpoint %d: %s changed: old 0x%x -> new 0x%x\n", 
+   						temp->NO, temp->expression, temp->old_val, new_val);
+   				temp->old_val = new_val;
+   			}
+   		}else{
+   				printf("Watchpoint %d: %s failed\n", temp->NO, temp->expression);
+   				nemu_state.state = NEMU_STOP;
+   				break;
+   			}
+   	}
+   	if(changed == true){
+   		nemu_state.state = NEMU_STOP;
+   	}
 
 #endif
 
