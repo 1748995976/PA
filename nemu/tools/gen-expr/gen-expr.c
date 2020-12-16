@@ -5,11 +5,47 @@
 #include <assert.h>
 #include <string.h>
 
+static inline uint32_t choose(uint32_t n){
+	return rand()%n;
+}
+
+static char *gen_num()
+{
+    char *str = malloc(10);
+    int num = choose(1000);
+    sprintf(str, "%d", num);
+    return str;
+}
+
+static char* gen_rand_op()
+{
+  int i = choose(4);
+  char *operator = NULL;
+  switch (i) {
+    case 0:
+      operator = strdup("+");
+      break;
+    case 1:
+      operator = strdup("-");
+      break;
+    case 2:
+      operator = strdup("*");
+      break;
+    case 3:
+      operator = strdup("/");
+      break;
+  }
+  return operator;
+}
+
+
+static char *gen_rand_expr()
+{
+    
+  return str;
+}
 // this should be enough
 static char buf[65536];
-static inline void gen_rand_expr() {
-  buf[0] = '\0';
-}
 
 static char code_buf[65536];
 static char *code_format =
@@ -44,8 +80,8 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    int result;
-    fscanf(fp, "%d", &result);
+    int result = fscanf(fp, "%d", &result);
+    assert(result==1);
     pclose(fp);
 
     printf("%u %s\n", result, buf);
