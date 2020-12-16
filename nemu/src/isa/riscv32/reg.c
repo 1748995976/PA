@@ -16,10 +16,28 @@ void isa_reg_display() {
     }
     printf("%s:0x%x",regsl[i],cpu.gpr[i]._32);
   }
-  
-  
 }
 
 uint32_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+  const char *reg = s + 1;
+  if(reg[0]>='0' && reg[0]<='9'){
+    int order = 0;
+    sscanf(reg,"%d",&order);
+    if(order>=0 && order <= 31){
+      return cpu.gpr[order]._32;
+    }else{
+      *success = false;
+      return 0;
+    }
+  }else
+  {
+    for (int i = 0; i < 32; i++)
+    {
+      if(strcmp(regsl[i],reg) == 0){
+        return cpu.gpr[i]._32;
+      }
+    }
+    *success = false;
+    return 0;
+  }
 }

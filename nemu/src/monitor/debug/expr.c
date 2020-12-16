@@ -190,10 +190,10 @@ int find_mainop(int p,int q){
   return ans;
 }
 
-uint32_t eval(int p, int q){
+uint32_t eval(int p, int q, bool* success){
   if (p > q) {
-    printf("eval fail!");
-    return -1;
+    *success = false;
+    return 0;
   }
   else if (p == q) {
     uint32_t result = 0;
@@ -206,27 +206,34 @@ uint32_t eval(int p, int q){
       sscanf(tokens[p].str+2,"%x",&result);
       break;
     case TK_REG:
-    //need update
-			result = isa_reg_str2val(tokens[p].str);
+			result = isa_reg_str2val(tokens[p].str,success);
       break;
     }
+    return result;
   }
   else if (check_parentheses(p, q) == true) {
-    /* The expression is surrounded by a matched pair of parentheses.
-     * If that is the case, just throw away the parentheses.
-     */
-    return eval(p + 1, q - 1);
+    int result = eval(p + 1, q - 1,success);
+    if(*success == true){
+      return result;
+    }else{
+      return 0;
+    }
   }
   else {
-    op = the position of 主运算符 in the token expression;
-    val1 = eval(p, op - 1);
-    val2 = eval(op + 1, q);
-
-    switch (op_type) {
-      case '+': return val1 + val2;
-      case '-': /* ... */
-      case '*': /* ... */
-      case '/': /* ... */
+    int op = find_mainop(p,q);
+    uint32_t val1 = eval(p, op - 1);
+    uint32_t val2 = eval(op + 1, q);
+    if(*success == false)
+      return 0;
+    paddr_read
+    switch (tokens[op].type) {
+      case TK_ADD: return val1 + val2;
+      case TK_SUB: return val1 - val2;
+      case TK_MUL: return val1 * val2;
+      case TK_DIV: return val1 / val2;
+      case TK_EQ: return (val1 == val2) ? 1 : 0;
+      case TK_NEQ: return (val1 != val2) ? 1 : 0;
+      case TK_AND: return val1&&val2;
       default: assert(0);
     }
   }
@@ -238,8 +245,9 @@ uint32_t expr(char *e, bool *success) {
     return 0;
   }
 
-  /* TODO: Insert codes to evaluate the expression. */
-  TODO();
-
+  uint32_t val = eval(0,nr_token-1,success);
+  if(*success == true){
+    return val;
+  }
   return 0;
 }
