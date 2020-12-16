@@ -4,48 +4,56 @@
 #include <time.h>
 #include <assert.h>
 #include <string.h>
+// this should be enough
+static char buf[65536];
 
-static inline uint32_t choose(uint32_t n){
+uint32_t choose(uint32_t n){
 	return rand()%n;
 }
 
-static char *gen_num()
-{
-    char *str = malloc(10);
-    int num = choose(1000);
-    sprintf(str, "%d", num);
-    return str;
+static inline void gen_num() {
+	char s[4];
+	uint32_t n = choose(99);
+	/* send the formatted data to string */
+	sprintf(s, "%u", n);
+	strcat(buf, s);		
 }
 
-static char* gen_rand_op()
-{
-  int i = choose(4);
-  char *operator = NULL;
-  switch (i) {
-    case 0:
-      operator = strdup("+");
-      break;
-    case 1:
-      operator = strdup("-");
-      break;
-    case 2:
-      operator = strdup("*");
-      break;
-    case 3:
-      operator = strdup("/");
-      break;
+static inline void gen(char str) {
+	/* generate random white space */
+	uint32_t lSpace = choose(4);
+	uint32_t rSpace = choose(4);
+	
+	char s[lSpace + 1 + rSpace];
+
+	uint32_t i;
+
+	for (i = 0; i < lSpace; i++)
+    s[i] = ' ';
+	s[i++] = str;
+	for (;i < lSpace + 1 + rSpace; i++)
+    s[i] = ' ';
+  s[lSpace + 1 + rSpace] = '\0';	
+	strcat(buf, s);
+}
+
+static inline void gen_rand_op() {
+	switch (choose(4)) {
+		case 0: gen('+'); break;
+		case 1: gen('-'); break;
+		case 2: gen('*'); break;
+		case 3: gen('/'); break;
+	}	
+}
+
+static inline void gen_rand_expr() {
+  
+  switch(choose(3)) {
+	case 0: gen_num(); break;
+	case 1: gen('('); gen_rand_expr(); gen(')'); break;
+	default:  gen_rand_expr(); gen_rand_op(); gen_rand_expr(); break; 
   }
-  return operator;
 }
-
-
-static char *gen_rand_expr()
-{
-    
-  return str;
-}
-// this should be enough
-static char buf[65536];
 
 static char code_buf[65536];
 static char *code_format =
@@ -64,6 +72,7 @@ int main(int argc, char *argv[]) {
     sscanf(argv[1], "%d", &loop);
   }
   int i;
+  memset(buf, '\0', 65536);
   for (i = 0; i < loop; i ++) {
     gen_rand_expr();
 
@@ -80,11 +89,13 @@ int main(int argc, char *argv[]) {
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
-    int result = fscanf(fp, "%d", &result);
-    assert(result==1);
+    int result; 
+    int fsn = fscanf(fp, "%d", &result);
+
     pclose(fp);
 
     printf("%u %s\n", result, buf);
+    memset(buf, '\0', 65536);
   }
   return 0;
 }
