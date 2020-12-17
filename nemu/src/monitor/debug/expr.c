@@ -7,7 +7,6 @@
 #include <regex.h>
 #include <stdlib.h>
 #include <string.h>
-#include "/home/hust/ics2019/nemu/src/isa/riscv32/include/isa/reg.h"
 
 enum {
   TK_NOTYPE = 256,
