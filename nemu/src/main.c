@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
   /* Initialize the monitor. */
   int is_batch_mode = init_monitor(argc, argv);
 
+  /*
   uint32_t expr(char *e, bool *success);
   FILE *fp = fopen("/home/hust/ics2019/nemu/tools/gen-expr/input","r");
   while(!feof(fp)){
@@ -26,6 +27,7 @@ int main(int argc, char *argv[]) {
       printf("failed!\n");
 	}
 	fclose(fp);
+  */
 
   /* Receive commands from user. */
   ui_mainloop(is_batch_mode);
