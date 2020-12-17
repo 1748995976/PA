@@ -8,12 +8,12 @@ static WP head_init = {.NO = -1, .next = NULL, .pre = NULL};
 static WP free_init = {.NO = -1, .next = NULL, .pre = NULL};
 static WP *head = NULL, *free = NULL;
 
-void insert_wp_before(WP *next, WP *wp){
-	WP *pre = next->pre;
-	wp->next = next;
-	wp->pre = pre;
+void insert_wp_before(WP* old,WP* wp){
+  WP *pre = old->pre;
+	wp->next = old;
+	wp->pre = pre ;
 	pre->next = wp;
-	next->pre = wp;
+	old->pre = wp;
 }
 
 WP* remove_wp(WP* wp){
@@ -50,7 +50,7 @@ void init_wp_pool() {
 WP *new_wp(){
 
 	assert(free->next != free);
-  printf("new_up function is exec\n");
+  printf("new_up function is exec!\n");
 
 	WP *wp = remove_wp(free->next);
 	insert_wp_before(head, wp);
@@ -58,6 +58,7 @@ WP *new_wp(){
 }
 
 void free_wp(int index_delete){
+  printf("free_wp function is exec!\n");
 
 	assert(index_delete >= 0 && index_delete < NR_WP);
 
