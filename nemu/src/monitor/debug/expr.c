@@ -107,6 +107,7 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
         assert(nr_token < 32);
+        printf("******************");
         switch (rules[i].token_type) {
           case TK_NOTYPE:
             break;
