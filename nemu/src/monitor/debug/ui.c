@@ -50,6 +50,7 @@ static int cmd_si(char *args){
 }
 
 static int cmd_info(char *args){
+  void isa_reg_display();
   if(args == NULL){
 
   }else if(strcmp(args, "r") == 0){
@@ -69,6 +70,7 @@ static int cmd_p(char* args){
 	}
 	else{
 		printf("Invalid expression\n");
+    return 0;
 	}
 }
 

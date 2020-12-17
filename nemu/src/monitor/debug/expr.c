@@ -196,6 +196,7 @@ int find_mainop(int p,int q){
 }
 
 uint32_t eval(int p, int q, bool* success){
+  uint32_t isa_reg_str2val(const char *s, bool *success);
   if (p > q) {
     *success = false;
     return 0;
