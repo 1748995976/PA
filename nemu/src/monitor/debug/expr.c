@@ -90,10 +90,8 @@ static bool make_token(char *e) {
   regmatch_t pmatch;
 
   nr_token = 0;
-  printf("-------$$$$$$$\n");
 
   while (e[position] != '\0') {
-    printf("-------*****\n");
     /* Try all rules one by one. */
     for (i = 0; i < NR_REGEX; i ++) {
       if (regexec(&re[i], e + position, 1, &pmatch, 0) == 0 && pmatch.rm_so == 0) {
@@ -109,7 +107,6 @@ static bool make_token(char *e) {
          * of tokens, some extra actions should be performed.
          */
         assert(nr_token < 32);
-        printf("******************\n");
         switch (rules[i].token_type) {
           case TK_NOTYPE:
             break;
