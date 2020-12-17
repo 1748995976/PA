@@ -262,6 +262,7 @@ uint32_t eval(int p, int q, bool* success){
 }
 
 uint32_t expr(char *e, bool *success) {
+  printf("expr receive expression:%s\n",e);
   if (!make_token(e)) {
     *success = false;
     printf("make_token failed!");
