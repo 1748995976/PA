@@ -79,7 +79,7 @@ void cpu_exec(uint64_t n) {
    				wp->old_val = new_val;
    			}
    		}else{
-   				printf("Watchpoint %d: %s failed\n", wp->NO, wp->expression);
+   				printf("Watchpoint %d: %s expression failed\n", wp->NO, wp->expression);
    				nemu_state.state = NEMU_STOP;
    				break;
    			}
