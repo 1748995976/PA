@@ -8,7 +8,7 @@ static WP head_init = {.NO = -1, .next = NULL, .pre = NULL};
 static WP free_init = {.NO = -1, .next = NULL, .pre = NULL};
 static WP *head = NULL, *free = NULL;
 
-void insert_before_wp(WP *next, WP *wp){
+void insert_wp_before(WP *next, WP *wp){
 	WP *pre = next->pre;
 	wp->next = next;
 	wp->pre = pre;
