@@ -50,6 +50,7 @@ void init_wp_pool() {
 WP *new_wp(){
 
 	assert(free->next != free);
+  printf("new_up function is exec\n");
 
 	WP *wp = remove_wp(free->next);
 	insert_wp_before(head, wp);
