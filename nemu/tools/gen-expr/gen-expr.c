@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
     sscanf(argv[1], "%d", &loop);
   }
   int i;
-  memset(buf, '\0', 65536);
   for (i = 0; i < loop; i ++) {
+    memset(buf, '\0', 65536);
     gen_rand_expr();
 
     sprintf(code_buf, code_format, buf);
@@ -83,19 +83,18 @@ int main(int argc, char *argv[]) {
     fputs(code_buf, fp);
     fclose(fp);
 
-    int ret = system("gcc /tmp/.code.c -o /tmp/.expr");
+    int ret = system("gcc -Werror /tmp/.code.c -o /tmp/.expr");
     if (ret != 0) continue;
 
     fp = popen("/tmp/.expr", "r");
     assert(fp != NULL);
 
     int result; 
-    int fsn = fscanf(fp, "%d", &result);
-
+    fscanf(fp, "%d", &result);
+    
     pclose(fp);
-
+    
     printf("%u %s\n", result, buf);
-    memset(buf, '\0', 65536);
   }
   return 0;
 }
