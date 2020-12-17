@@ -153,15 +153,23 @@ static bool make_token(char *e) {
 }
 
 bool check_parentheses(int p,int q){
-  if(!((tokens[p].type == TK_LP)&&(tokens[q].type == TK_RP)))return false;
-	int k=0;
-	for(int i=p+1;i<q;i++){
-		if(tokens[i].type == TK_LP)k++;
-		if(tokens[i].type == TK_RP)k--;
-		if(k<0)return false;
-	}
-	if(k == 0)return true;
-	else return false;
+  if(tokens[p].type != TK_LP || tokens[q].type != TK_RP){
+    return false;
+  }
+  int cnt = 0;
+  for (int i = p; i <= q; i++)
+  {
+    if(tokens[i].type == TK_LP){
+      cnt++;
+    }else if(tokens[i].type == TK_RP){
+      cnt--;
+    }
+    assert(cnt >= 0);
+    if(cnt < 0)
+      return false;
+  }
+  assert(cnt == 0);
+  return cnt == 0;
 }
 
 int find_mainop(int p,int q){
@@ -280,6 +288,7 @@ uint32_t expr(char *e, bool *success) {
 	  }
 	}
   *success = true;
+  printf("******%d",nr_token);
   uint32_t val = eval(0,nr_token-1,success);
   return val;
 }
