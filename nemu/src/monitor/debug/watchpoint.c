@@ -48,9 +48,7 @@ void init_wp_pool() {
 
 /* TODO: Implement the functionality of watchpoint */
 WP *new_wp(){
-
 	assert(free->next != free);
-  printf("new_up function is exec!\n");
 
 	WP *wp = remove_wp(free->next);
 	insert_wp_before(head, wp);
@@ -58,8 +56,6 @@ WP *new_wp(){
 }
 
 void free_wp(int index_delete){
-  printf("free_wp function is exec!\n");
-
 	assert(index_delete >= 0 && index_delete < NR_WP);
 
   if(strlen(wp_pool[index_delete].expression) == 0){
