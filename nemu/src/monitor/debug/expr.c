@@ -293,6 +293,7 @@ uint32_t expr(char *e, bool *success) {
 	}
   *success = true;
   uint32_t val = eval(0,nr_token-1,success);
+  printf("-------%d",nr_token);
   if(*success == false){
     printf("eval failed!\n");
   }
