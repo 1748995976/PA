@@ -61,6 +61,7 @@ void cpu_exec(uint64_t n) {
   log_clearbuf();
 
     /* TODO: check watchpoints here. */
+    uint32_t expr(char *e, bool *success);
     WP *head = get_head(); 	
    	WP *wp = head->next;
 
