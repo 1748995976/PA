@@ -8,12 +8,12 @@ static WP head_init = {.NO = -1, .next = NULL, .pre = NULL};
 static WP free_init = {.NO = -1, .next = NULL, .pre = NULL};
 static WP *head = NULL, *free = NULL;
 
-void insert_wp_before(WP* old,WP* wp){
-  WP *pre = old->pre;
-	wp->next = old;
-	wp->pre = pre ;
+void insert_before_wp(WP *next, WP *wp){
+	WP *pre = next->pre;
+	wp->next = next;
+	wp->pre = pre;
 	pre->next = wp;
-	old->pre = wp;
+	next->pre = wp;
 }
 
 WP* remove_wp(WP* wp){
