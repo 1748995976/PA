@@ -43,12 +43,6 @@ void init_wp_pool() {
   {
     insert_wp_before(free,&wp_pool[i]);
   }
-  printf("@@@@@@@@@@\n");
-  for (WP* a = head->next; a != head; a = a->next)
-  {
-    printf("^^^^^^^^^^%d\n",a->NO);
-  }
-  
   
 }
 

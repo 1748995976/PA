@@ -104,7 +104,6 @@ static int cmd_x(char *args){
 }
 
 static int cmd_w(char *args){
-  printf("&&&&&&&&&&&&&&&&&&&&&&&&&&%s\n",args);
 	bool success = true;
 	uint32_t result = expr(args, &success);
 	if(success == true){
