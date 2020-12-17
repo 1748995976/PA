@@ -30,7 +30,7 @@ void init_wp_pool() {
   for (i = 0; i < NR_WP; i ++) {
     wp_pool[i].NO = i;
     wp_pool[i].old_val = 0;
-    memset(wp_pool[i].expression, 0, sizeof(wp_pool[0].expression));
+    memset(wp_pool[i].expression, 0, sizeof(wp_pool[i].expression));
     wp_pool[i].next = NULL;
     wp_pool[i].pre = NULL;
   }
@@ -43,6 +43,12 @@ void init_wp_pool() {
   {
     insert_wp_before(free,&wp_pool[i]);
   }
+  printf("@@@@@@@@@@\n");
+  for (WP* a = head->next; a != head; a = a->next)
+  {
+    printf("^^^^^^^^^^%d\n",a->NO);
+  }
+  
   
 }
 
