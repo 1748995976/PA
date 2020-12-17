@@ -12,35 +12,24 @@ int main(int argc, char *argv[]) {
   /* Receive commands from user. */
   ui_mainloop(is_batch_mode);
 
-	bool success = true;
 
-	FILE *fp = fopen("/home/mff/ics2019/nemu/tools/gen-expr/input", "r");
-	assert(fp != NULL);
-	unsigned int result = 0;
-	char inputexprbuf[65536];
-	size_t len = 0;
-	ssize_t read;
-	char *line = NULL;
-	int fileline = 1;
+  FILE *fp = fopen("/home/hust/ics2019/nemu/tools/gen-expr/input","r");
+  char str[100];
+  uint32_t result;
+  while(!feof(fp)){
+	  fscanf(fp,"%u",&result);
+	  fscanf(fp,"%s",str);
+	  bool success ;
+	  printf("%s\n",str);
+	  //uint32_t count_result = expr("2+3*4",&success);
+	  uint32_t count_result =  expr(str,&success);
+	  printf("%u %s %u\n",result,str,count_result);
+	  //assert(count_result == result);
+	  if(count_result == result)printf("yes\n");
+	  else printf("no\n");
+	  }
+	  fclose(fp);
 
-	while((read = getline(&line, &len, fp)) != EOF){
-		assert(strlen(line) < 65536);
-		strcat(inputexprbuf, line);
-		char x[20];
-		sscanf(inputexprbuf, "%s", x);
-		int x_len = strlen(x);
-		sscanf(inputexprbuf, "%u", &result);
-		if(result == expr(line + x_len+1, &success)){
-			printf("success\n");
-			memset(inputexprbuf, 0, sizeof(inputexprbuf));
-		}
-		else{
-			printf("error occurs in %d\n", fileline);
-			break;
-		}
-		fileline++;
-	}
-	fclose(fp);
 
   return 0;
 }
