@@ -37,14 +37,14 @@ void init_wp_pool() {
   head = &head_init;
   free = &free_init;
   head->next = head->pre = head;
-  free->next = free->pre = head;
+  free->next = free->pre = free;
 
   for (i = 0; i < NR_WP; i++)
   {
     insert_wp_before(free,&wp_pool[i]);
   }
   printf("@@@@@@@@@@\n");
-  for (WP* a = head->pre; a != head; a = a->pre)
+  for (WP* a = head->next; a != head; a = a->next)
   {
     printf("^^^^^^^^^^%d\n",a->NO);
   }
