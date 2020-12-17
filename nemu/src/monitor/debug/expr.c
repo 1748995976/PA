@@ -199,6 +199,7 @@ uint32_t eval(int p, int q, bool* success){
   uint32_t isa_reg_str2val(const char *s, bool *success);
   if (p > q) {
     *success = false;
+    printf("eval p>q failed!\n");
     return 0;
   }
   else if (p == q) {
@@ -293,7 +294,7 @@ uint32_t expr(char *e, bool *success) {
   *success = true;
   uint32_t val = eval(0,nr_token-1,success);
   if(*success == false){
-    printf("eval failed!");
+    printf("eval failed!\n");
   }
   return val;
 }
