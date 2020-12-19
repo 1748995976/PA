@@ -7,6 +7,7 @@ make_EHelper(st);
 make_EHelper(lb);
 make_EHelper(lh);
 
+//special.c
 make_EHelper(inv);
 make_EHelper(nemu_trap);
 

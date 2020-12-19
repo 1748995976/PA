@@ -20,3 +20,55 @@ make_EHelper(jalr){
 	rtl_jr(&s0);
 	print_asm_template2(jalr);
 }
+
+make_EHelper(beq){
+	rtl_li(&s1, cpu.pc);
+	rtl_add(&s0, &s1, &id_dest->val);
+	rtl_jrelop(RELOP_EQ, &id_src->val, &id_src2->val, s0);
+	
+	print_asm_template3(beq);
+}
+
+make_EHelper(bne){
+	rtl_li(&s1, cpu.pc);
+	rtl_add(&s0, &s1, &id_dest->val);
+	rtl_jrelop(RELOP_NE, &id_src->val, &id_src2->val, s0);
+	
+	print_asm_template3(bne);
+	
+}
+
+make_EHelper(blt){
+	rtl_li(&s1, cpu.pc);
+	rtl_add(&s0, &s1, &id_dest->val);
+	rtl_jrelop(RELOP_LT, &id_src->val, &id_src2->val, s0);
+	
+	print_asm_template3(blt);
+}
+
+make_EHelper(bge){
+	rtl_li(&s1, cpu.pc);
+	rtl_add(&s0, &s1, &id_dest->val);
+	rtl_jrelop(RELOP_GE, &id_src->val, &id_src2->val, s0);
+	
+	print_asm_template3(bge);
+	
+}
+
+make_EHelper(bltu){
+	rtl_li(&s1, cpu.pc);
+	rtl_add(&s0, &s1, &id_dest->val);
+	rtl_jrelop(RELOP_LTU, &id_src->val, &id_src2->val, s0);
+	
+	print_asm_template3(bltu);
+	
+}
+
+make_EHelper(bgeu){
+	rtl_li(&s1, cpu.pc);
+	rtl_add(&s0, &s1, &id_dest->val);
+	rtl_jrelop(RELOP_GEU, &id_src->val, &id_src2->val, s0);
+	
+	print_asm_template3(bgeu);
+	
+}
