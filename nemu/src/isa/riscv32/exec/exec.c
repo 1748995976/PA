@@ -28,7 +28,7 @@ static OpcodeEntry imm_series_srli_table[2] = {
 
 static make_EHelper(imm_series_srli){
 	decinfo.width = imm_series_srli_table[GETBIT30(decinfo.isa.instr.val)].width;
-  idex(pc, &imm_series_srli_table[GETBIT30(decinfo.isa.instr.val));
+  idex(pc, &imm_series_srli_table[GETBIT30(decinfo.isa.instr.val)]);
 };
 
 static OpcodeEntry imm_series_table [8] = {
@@ -47,7 +47,7 @@ static OpcodeEntry R_series_add_table [2] = {
 
 static make_EHelper(R_series_add){
 	decinfo.width = R_series_add_table[GETBIT30(decinfo.isa.instr.val)].width;
-  idex(pc, &R_series_add_table[GETBIT30(decinfo.isa.instr.val));
+  idex(pc, &R_series_add_table[GETBIT30(decinfo.isa.instr.val)]);
 };
 
 static OpcodeEntry R_series_srl_table [2] = {
@@ -56,7 +56,7 @@ static OpcodeEntry R_series_srl_table [2] = {
 
 static make_EHelper(R_series_srl){
 	decinfo.width = R_series_srl_table[GETBIT30(decinfo.isa.instr.val)].width;
-  idex(pc, &R_series_srl_table[GETBIT30(decinfo.isa.instr.val));
+  idex(pc, &R_series_srl_table[GETBIT30(decinfo.isa.instr.val)]);
 };
 
 static OpcodeEntry R_series_table [8] = {
@@ -82,7 +82,7 @@ static OpcodeEntry MR_series_table [2] = {
 };
 
 static make_EHelper(MR_series){
-  idex(pc, &MR_series_table[GETBIT25(decinfo.isa.instr.val));
+  idex(pc, &MR_series_table[GETBIT25(decinfo.isa.instr.val)]);
 };
 
 //B_series
