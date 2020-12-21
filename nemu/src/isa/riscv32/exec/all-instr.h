@@ -58,3 +58,6 @@ make_EHelper(div);
 make_EHelper(divu);
 make_EHelper(rem);
 make_EHelper(remu);
+
+//system.c
+make_EHelper(system);
