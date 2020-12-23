@@ -2,11 +2,7 @@
 extern size_t ramdisk_read(void*, size_t, size_t);
 extern size_t ramdisk_write(const void*, size_t, size_t);
 
-extern size_t events_read(void*, size_t, size_t);
-extern size_t dispinfo_read(void*, size_t, size_t);
 extern size_t serial_write(const void*, size_t, size_t);
-extern size_t fb_write(const void*, size_t, size_t);
-extern size_t fbsync_write(const void*, size_t, size_t);
 
 typedef size_t (*ReadFn) (void *buf, size_t offset, size_t len);
 typedef size_t (*WriteFn) (const void *buf, size_t offset, size_t len);
@@ -37,11 +33,6 @@ static Finfo file_table[] __attribute__((used)) = {
   {"stdin", 0, 0, 0, invalid_read, invalid_write},
   {"stdout", 0, 0, 0, invalid_read, serial_write},
   {"stderr", 0, 0, 0, invalid_read, serial_write},
-  {"/dev/events", 0xffffff, 0, 0, events_read, invalid_write},
-  {"/dev/tty", 0, 0, 0, invalid_read, serial_write},
-  {"/dev/fb", 0, 0, 0, invalid_read, fb_write},
-  {"/dev/fbsync", 0xffff, 0, 0, invalid_read, fbsync_write},
-  {"/proc/dispinfo", 128, 0, 0, dispinfo_read, invalid_write},
 #include "files.h"
 };
 
@@ -49,11 +40,12 @@ static Finfo file_table[] __attribute__((used)) = {
 
 int fs_open(const char *pathname, int flags, int mode){
     for(int i = 3; i < NR_FILES;i++){
+        //printf("pathbaname:%s\n,file_tablename:%s\n",pathname,file_table[i].name);
         if(strcmp(pathname, file_table[i].name) == 0){
             return i;
         }
     }
-    assert(0 && "Can't find file");
+    panic("Can't find file");
 }
 
 size_t fs_read(int fd, void *buf, size_t len){
@@ -112,6 +104,4 @@ int fs_close(int fd){
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
-  int fb = fs_open("/dev/fb", 0, 0);
-  file_table[fb].size = screen_width()*screen_height()*4;
 }
