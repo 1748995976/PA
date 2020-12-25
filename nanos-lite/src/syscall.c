@@ -3,6 +3,7 @@
 #include "fs.h"
 #include "proc.h"
 
+extern void naive_uload(PCB *pcb, const char *filename);
 static int programBrk;
 int do_write(int fd, const void*buf, size_t count);
 int do_brk(int addr);

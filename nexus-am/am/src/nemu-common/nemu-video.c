@@ -1,6 +1,7 @@
 #include <am.h>
 #include <amdev.h>
 #include <nemu.h>
+
 static inline int min(int x, int y) {
   return (x < y) ? x : y;
 }
@@ -31,7 +32,7 @@ size_t __am_video_write(uintptr_t reg, void *buf, size_t size) {
       uint32_t *pixels = ctl->pixels;
       int width = screen_width();
       int height = screen_height();
-      int cp_bytes = sizeof(uint32_t) * ((w < (width-x))? w : (width-x));
+      int cp_bytes = sizeof(uint32_t) * min(w,width);
 
       uint32_t *fb = (uint32_t *)(uintptr_t)FB_ADDR;
 
